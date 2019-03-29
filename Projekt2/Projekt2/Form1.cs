@@ -7,13 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Numerics;
+
 
 namespace Projekt2
 {
     public partial class Form1 : Form
     {
+        public char[] Alphabet { get; set; }
         public Form1()
         {
+            Alphabet = new char[] { 'A', 'Ą', 'B', 'C', 'Ć', 'D', 'E', 'Ę', 'F', 'G', 'H', 'I', 'J', 'K',
+                'L', 'Ł', 'M', 'N', 'Ń', 'O', 'Ó', 'P', 'R', 'S', 'Ś', 'T', 'U', 'W', 'Y', 'Z', 'Ź', 'Ż' };
             InitializeComponent();
         }
 
@@ -231,6 +236,99 @@ namespace Projekt2
             }
 
             textBox10.Text = output;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int k1, k0;
+
+                int.TryParse(textBox17.Text, out k1);
+                int.TryParse(textBox19.Text, out k0);
+
+                var charactersToEncrypt = textBox18.Text.Trim().ToUpper().ToCharArray();
+                textBox16.Text = "";
+
+                foreach (var character in charactersToEncrypt)
+                {
+                    var letterIndex = Alphabet.Select((s, i) => new { i, s })
+                        .Where(t => t.s == character)
+                        .Select(t => t.i)
+                        .FirstOrDefault();
+
+                    var c = (letterIndex * k1 + k0) % Alphabet.Length;
+                    textBox16.Text += Alphabet[c];
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Wystąpił błąd: " + ex.Message);
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int k1, k0;
+
+                int.TryParse(textBox20.Text, out k1);
+                int.TryParse(textBox14.Text, out k0);
+
+                var charactersToDecrypt = textBox15.Text.ToUpper().ToCharArray();
+                textBox13.Text = "";
+
+                foreach (var character in charactersToDecrypt)
+                {
+                    var letterIndex = Alphabet.Select((s, i) => new { i, s })
+                        .Where(t => t.s == character)
+                        .Select(t => t.i)
+                        .FirstOrDefault();
+
+                    BigInteger a = ((letterIndex + (((100 * Alphabet.Length) - k0) % Alphabet.Length)) * Poteguj(k1, (int)EulerTot(Alphabet.Length) - 1));
+                    a = BigInteger.Remainder(a, BigInteger.Parse(Alphabet.Length.ToString()));
+                    textBox13.Text += Alphabet[(int)a];
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Wystąpił błąd: " + ex.Message);
+            }
+        }
+
+        private float EulerTot(int n)
+        {
+            float result = n;
+            for (int i = 2; i <= n / 2; i++)
+            {
+                if (n % i == 0 && isPrime(i))
+                    result *= (1 - (1 / (float)i));
+            }
+            return result;
+        }
+
+        private bool isPrime(int n)
+        {
+            for (int i = 2; i <= Math.Sqrt(n); i++)
+            {
+                if (n % i == 0)
+                    return false;
+            }
+            return true;
+        }
+
+        private System.Numerics.BigInteger Poteguj(int a, int n)
+        {
+            BigInteger wynik = a;
+            for (int i = 1; i < n; i++)
+            {
+                wynik *= a;
+            }
+
+            return wynik;
         }
     }
 }
