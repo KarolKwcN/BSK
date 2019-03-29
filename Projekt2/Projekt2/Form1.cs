@@ -135,5 +135,102 @@ namespace Projekt2
             return new string(result);
         }
 
+        private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string input = textBox9.Text.Replace(" ", "");
+                string output = "";
+                string[] sKey = textBox8.Text.Split('-');
+                int[] iKey = new int[sKey.Length];
+                for (int i = 0; i < sKey.Length; i++)
+                {
+                    iKey[i] = int.Parse(sKey[i]);
+                }
+                double derivation = Convert.ToDouble(input.Length) / Convert.ToDouble(iKey.Length);
+                int itemsLength = Convert.ToInt32(Math.Ceiling(derivation));
+                string[] items = new string[itemsLength];
+
+                int position = 0;
+                for (int i = 0; i < itemsLength; i++)
+                {
+                    if (position + iKey.Length <= input.Length - 1)
+                    {
+                        items[i] = input.Substring(position, iKey.Length);
+                    }
+                    else
+                    {
+                        items[i] = input.Substring(position);
+                    }
+                    position += iKey.Length;
+                }
+
+                foreach (var item in items)
+                {
+                    for (int i = 0; i < iKey.Length; i++)
+                    {
+                        if (iKey[i] <= item.Length)
+                            output += item[iKey[i] - 1];
+                    }
+                }
+
+                textBox7.Text = output;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string input = textBox12.Text.Replace(" ", "");
+            string output = "";
+            string[] sKey = textBox11.Text.Split('-');
+            int[] iKey = new int[sKey.Length];
+            for (int i = 0; i < sKey.Length; i++)
+            {
+                iKey[i] = int.Parse(sKey[i]);
+            }
+
+            double derivation = Convert.ToDouble(input.Length) / Convert.ToDouble(iKey.Length);
+            int itemsLength = Convert.ToInt32(Math.Ceiling(derivation));
+            string[] items = new string[itemsLength];
+
+            int position = 0;
+            for (int i = 0; i < itemsLength; i++)
+            {
+                if (position + iKey.Length <= input.Length - 1)
+                {
+                    items[i] = input.Substring(position, iKey.Length);
+                }
+                else
+                {
+                    items[i] = input.Substring(position);
+                }
+                position += iKey.Length;
+            }
+
+            foreach (var item in items)
+            {
+                int index = 0;
+                char[] chars = new char[item.Length];
+                for (int i = 0; i < iKey.Length; i++)
+                {
+                    if (iKey[i] - 1 >= chars.Length) continue;
+                    chars[iKey[i] - 1] = item[index];
+                    index++;
+                }
+                output += new string(chars);
+            }
+
+            textBox10.Text = output;
+        }
     }
 }
