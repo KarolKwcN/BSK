@@ -330,5 +330,114 @@ namespace Projekt2
 
             return wynik;
         }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            char[] alphabet = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+
+            char[][] table = new char[alphabet.Length][];
+            for (int r = 0; r < alphabet.Length; r++)
+            {
+                table[r] = new char[alphabet.Length];
+
+                for (int c = 0; c < alphabet.Length; c++)
+                {
+                    table[r][c] = alphabet[(r + c) % alphabet.Length];
+                }
+            }
+
+            try
+            {
+                var charactersToEncrypt = textBox26.Text.Trim().ToLower().ToCharArray();
+                var keyLetters = textBox25.Text.Trim().ToLower().ToCharArray();
+                textBox24.Text = "";
+
+                if (charactersToEncrypt.Length != keyLetters.Length)
+                {
+                    int temp = 0;
+                    while (keyLetters.Length < charactersToEncrypt.Length)
+                    {
+                        Array.Resize(ref keyLetters, keyLetters.Length + 1);
+                        keyLetters[keyLetters.Length - 1] = keyLetters[temp];
+                        temp++;
+                    }
+
+                }
+
+                for (int i = 0; i < charactersToEncrypt.Length; i++)
+                {
+                    var letterIndex = alphabet.Select((s, j) => new { j, s })
+                        .Where(t => t.s == charactersToEncrypt[i])
+                        .Select(t => t.j)
+                        .FirstOrDefault();
+
+                    var keyIndex = alphabet.Select((s, j) => new { j, s })
+                        .Where(t => t.s == keyLetters[i])
+                        .Select(t => t.j)
+                        .FirstOrDefault();
+
+                    textBox24.Text += table[letterIndex][keyIndex];
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Wystąpił błąd: " + ex.Message);
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            char[] alphabet = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+
+            char[][] table = new char[alphabet.Length][];
+            for (int r = 0; r < alphabet.Length; r++)
+            {
+                table[r] = new char[alphabet.Length];
+
+                for (int c = 0; c < alphabet.Length; c++)
+                {
+                    table[r][c] = alphabet[(r + c) % alphabet.Length];
+                }
+            }
+
+            try
+            {
+                var charactersToDecrypt = textBox23.Text.Trim().ToLower().ToCharArray();
+                var keyLetters = textBox22.Text.Trim().ToLower().ToCharArray();
+                textBox21.Text = "";
+
+                if (charactersToDecrypt.Length != keyLetters.Length)
+                {
+                    int temp = 0;
+                    while (keyLetters.Length < charactersToDecrypt.Length)
+                    {
+                        Array.Resize(ref keyLetters, keyLetters.Length + 1);
+                        keyLetters[keyLetters.Length - 1] = keyLetters[temp];
+                        temp++;
+                    }
+                }
+
+                for (int i = 0; i < charactersToDecrypt.Length; i++)
+                {
+                    var keyIndex = alphabet.Select((s, j) => new { j, s })
+                        .Where(t => t.s == keyLetters[i])
+                        .Select(t => t.j)
+                        .FirstOrDefault();
+
+                    for (int x = 0; x < alphabet.Length; x++)
+                    {
+                        if (table[x][keyIndex] == charactersToDecrypt[i])
+                        {
+                            textBox21.Text += alphabet[x];
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Wystąpił błąd: " + ex.Message);
+            }
+        }
     }
 }
